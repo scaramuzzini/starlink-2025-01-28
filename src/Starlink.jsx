@@ -18,7 +18,10 @@ function Starlink() {
 
     const [satelites, setSatelites] = useState([]);
     const isPrimeiraRequisicao = useRef(true);
-    const [page, setPage] = useState(19);
+    const [page, setPage] = useState(1);
+    const [total, setTotal] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+  
 
     useEffect(() => {
         if (isPrimeiraRequisicao.current) {
@@ -40,6 +43,14 @@ function Starlink() {
         );
         console.log(response.data.docs);
         setSatelites((prevSat) => [...prevSat, ...response.data.docs]);
+        setTotal(response.data.totalDocs);
+        setHasMore(response.data.hasNextPage);
+    };
+
+    const carregarMais = () => {
+        const nextPage = page + 1;
+        setPage(nextPage);
+        fetchStarlink(nextPage);
     };
 
     return <>
@@ -64,7 +75,14 @@ function Starlink() {
                 )
             }
         </MapContainer>
-        Total carregado: {satelites.length} Pagina Atual: {page}
+        <div style={{ textAlign: 'center', margin: '10px 0' }}>
+          <button onClick={carregarMais}>
+            Carregar mais
+          </button>
+          <p>
+            Total carregado: {satelites.length} Pagina Atual: {page}
+          </p>
+        </div>
     </>
 }
 
