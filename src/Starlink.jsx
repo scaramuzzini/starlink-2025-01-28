@@ -6,6 +6,13 @@ import { useMap } from 'react-leaflet/hooks'
 import 'leaflet/dist/leaflet.css';
 import { Marker, Popup } from 'react-leaflet';
 
+const satelliteIcon = new L.Icon({
+    iconUrl: 'satellite.png', 
+    iconSize: [25, 25], 
+    iconAnchor: [12, 12], 
+    popupAnchor: [0, -12] 
+  });
+  
 function Starlink() {
 
     const [satelites, setSatelites] = useState([]);
@@ -16,7 +23,7 @@ function Starlink() {
                 , {
                     "query": {},
                     "options": {
-                        limit: 10
+                        limit: 100
                     }
                 }
             );
@@ -28,17 +35,14 @@ function Starlink() {
 
     return <>
         <h1>Lista de satélites Starlink</h1>
-        satelites
         <MapContainer center={[51,0]} zoom={2} style={{height: '80vh'}}>
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />  
-            <Marker position={[51,0]}>
-
-            </Marker>
             {
                 satelites
                     .filter((sat) => sat.longitude && sat.latitude)
                     .map((sat) => (
-                        <Marker position={[sat.latitude, sat.longitude ]}>
+                        <Marker position={[sat.latitude, sat.longitude ]}
+                            icon={satelliteIcon}>
                             <Popup>
                                 <h2>
                                     {sat.spaceTrack.OBJECT_NAME}
@@ -50,6 +54,7 @@ function Starlink() {
                 )
             }
         </MapContainer>
+        Total carregado: {satelites.length}
     </>
 }
 
