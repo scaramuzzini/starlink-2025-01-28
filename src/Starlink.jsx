@@ -18,20 +18,21 @@ function Starlink() {
     const [satelites, setSatelites] = useState([]);
 
     useEffect(() => {
-        const fetchStarlink = async () => {
-            const response = await axios.post('https://api.spacexdata.com/v4/starlink/query'
-                , {
-                    "query": {},
-                    "options": {
-                        limit: 100
-                    }
-                }
-            );
-            console.log(response.data.docs);
-            setSatelites(response.data.docs);
-        }
         fetchStarlink();
     },[]);
+
+    const fetchStarlink = async () => {
+        const response = await axios.post('https://api.spacexdata.com/v4/starlink/query'
+            , {
+                "query": {},
+                "options": {
+                    limit: 100
+                }
+            }
+        );
+        console.log(response.data.docs);
+        setSatelites(response.data.docs);
+    };
 
     return <>
         <h1>Lista de satélites Starlink</h1>
@@ -42,7 +43,8 @@ function Starlink() {
                     .filter((sat) => sat.longitude && sat.latitude)
                     .map((sat) => (
                         <Marker position={[sat.latitude, sat.longitude ]}
-                            icon={satelliteIcon}>
+                            icon={satelliteIcon}
+                            key={sat.id}>
                             <Popup>
                                 <h2>
                                     {sat.spaceTrack.OBJECT_NAME}
