@@ -18,26 +18,28 @@ function Starlink() {
 
     const [satelites, setSatelites] = useState([]);
     const isPrimeiraRequisicao = useRef(true);
+    const [page, setPage] = useState(19);
 
     useEffect(() => {
         if (isPrimeiraRequisicao.current) {
             console.log('primeira requisicao');
-            fetchStarlink();
+            fetchStarlink(page);
             isPrimeiraRequisicao.current = false;
           }
     },[]);
 
-    const fetchStarlink = async () => {
+    const fetchStarlink = async (page) => {
         const response = await axios.post('https://api.spacexdata.com/v4/starlink/query'
             , {
                 "query": {},
                 "options": {
-                    limit: 100
+                    limit: 100,
+                    page: page
                 }
             }
         );
         console.log(response.data.docs);
-        setSatelites(response.data.docs);
+        setSatelites((prevSat) => [...prevSat, ...response.data.docs]);
     };
 
     return <>
@@ -62,7 +64,7 @@ function Starlink() {
                 )
             }
         </MapContainer>
-        Total carregado: {satelites.length}
+        Total carregado: {satelites.length} Pagina Atual: {page}
     </>
 }
 
