@@ -1,10 +1,11 @@
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState, useEffect,useRef } from 'react';
 import { MapContainer } from 'react-leaflet/MapContainer'
 import { TileLayer } from 'react-leaflet/TileLayer'
 import { useMap } from 'react-leaflet/hooks'
 import 'leaflet/dist/leaflet.css';
 import { Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
 
 const satelliteIcon = new L.Icon({
     iconUrl: 'satellite.png', 
@@ -16,9 +17,14 @@ const satelliteIcon = new L.Icon({
 function Starlink() {
 
     const [satelites, setSatelites] = useState([]);
+    const isPrimeiraRequisicao = useRef(true);
 
     useEffect(() => {
-        fetchStarlink();
+        if (isPrimeiraRequisicao.current) {
+            console.log('primeira requisicao');
+            fetchStarlink();
+            isPrimeiraRequisicao.current = false;
+          }
     },[]);
 
     const fetchStarlink = async () => {
